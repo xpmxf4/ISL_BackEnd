@@ -1,5 +1,6 @@
 ### 파일 무시
 package-lock.json
+database_config.txt
 
 ### 폴더 무시
 node_modules/
