@@ -13,6 +13,10 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
+// routers
+app.use("/countries", countriesRouter)
+app.get("/", indexRouter)
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     res.status(404).json({ error: "Not Found" })
@@ -29,8 +33,6 @@ app.use(function (err, req, res, next) {
     res.json({ error: message, details: error })
 })
 
-// routers
-app.post("/countries", countriesRouter)
-app.get("/".indexRouter)
+
 
 module.exports = app
