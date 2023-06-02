@@ -4,7 +4,6 @@ var cookieParser = require("cookie-parser")
 var logger = require("morgan")
 var csrf = require("csurf")
 
-
 var countriesRouter = require("./routes/countries")
 var csrfTokenRouter = require("./routes/csrfToken")
 
@@ -15,19 +14,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
 
-// csurf middleware set (token's in cookies)
-var csrfProtection = csrf({ cookie: true })
-app.use(csrfProtection)
+// Middleware
+app.use(csrf({ cookie: true }))
 
 // routers
 app.use("/countries", countriesRouter)
 app.use("/csrf-token", csrfTokenRouter)
-
-// Provide CSRF token on a GET request
-// Provided in the response body as a JSON object 
-app.get('/csrf-token', (req, res) => {
-    res.json({ csrfToken: req.csrfToken() })
-})
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
