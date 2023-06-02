@@ -3,6 +3,7 @@ var path = require("path")
 var cookieParser = require("cookie-parser")
 var logger = require("morgan")
 var csrf = require("csurf")
+var helmet = require("helmet")
 
 var countriesRouter = require("./routes/countries")
 var csrfTokenRouter = require("./routes/csrfToken")
@@ -13,6 +14,17 @@ app.use(logger("dev"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(helmet())
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+        },
+    })
+)
 
 // Middleware
 app.use(csrf({ cookie: true }))
