@@ -8,6 +8,7 @@ var cors = require("cors")
 
 var countriesRouter = require("./routes/countries")
 var csrfTokenRouter = require("./routes/csrfToken")
+var statisticsRouter = require("./routes/statistics")
 
 var app = express()
 
@@ -34,6 +35,7 @@ app.use(csrf({ cookie: true }))
 // routers
 app.use("/countries", countriesRouter)
 app.use("/csrf-token", csrfTokenRouter)
+app.use("/statistics", statisticsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

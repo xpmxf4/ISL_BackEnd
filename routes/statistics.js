@@ -1,10 +1,13 @@
 const express = require('express')
 const mysql = require('mysql2')
 const fs = require('fs')
+const path = require('path')
+
 const router = express.Router()
 
 const app = express()
 
+// read admin info from txt
 const [host, user, password, database] = fs
     .readFileSync('database_config.txt', 'utf-8')
     .split('\n')
@@ -15,52 +18,46 @@ const db = mysql.createConnection({
     host, user, password, database
 })
 
-
-router.get('/top5', () => {
-    const queryAll = `SELECT to_country, COUNT(*) AS count FROM isl GROUP BY to_country ORDER BY count DESC LIMIT 5`;
-    const queryMonthly = `SELECT to_country, COUNT(*) AS count, MONTH(date) AS month, YEAR(date) AS year FROM isl WHERE date >= DATE_SUB(NOW(), INTERVAL 1 MONTH) GROUP BY to_country, month, year ORDER BY count DESC LIMIT 5`;
-    const queryWeekly = `SELECT to_country, COUNT(*) AS count, WEEK(date) AS week, YEAR(date) AS year FROM isl WHERE date >= DATE_SUB(NOW(), INTERVAL 1 WEEK) GROUP BY to_country, week, year ORDER BY count DESC LIMIT 5`;
-    const queryDaily = `SELECT to_country, COUNT(*) AS count, DATE(date) AS date FROM isl WHERE DATE(date) = CURDATE() GROUP BY to_country, date ORDER BY count DESC LIMIT 5`;
-
-    const result = {};
-
-    db.query(queryAll, (err, rows) => {
-        if (err) {
-            console.log('error executing query : ', err);
-            result.all = []
-        } else {
-            result.all = rows;
-        }
+// wrap query execution with Promise
+const executeQuery = query => {
+    return new Promise((res, rej) => {
+        db.query(query, (err, rows) => {
+            if (err) {
+                rej(err);
+            } else {
+                res(rows);
+            }
+        })
     })
+}
 
-    db.query(queryMonthly, (err, rows) => {
-        if (err) {
-            console.log('error executing query : ', err);
-            result.monthly = []
-        } else {
-            result.monthly = rows;
-        }
-    })
+// read query from sql file
+const readQueryFromFile = fileName => {
+    const filePath = path.join(__dirname, fileName);
+    return fs.readFileSync(filePath, 'utf-8');
+}
 
-    db.query(queryWeekly, (err, rows) => {
-        if (err) {
-            console.log('error executing query : ', err);
-            result.weekly = []
-        } else {
-            result.weekly = rows;
-        }
-    })
+router.get('/top5', async (req, res) => {
+    try {
+        const queryAll = readQueryFromFile('../sql/query_all.sql');
+        const queryMonthly = readQueryFromFile('../sql/query_monthly.sql');
+        const queryWeekly = readQueryFromFile('../sql/query_weekly.sql');
+        const queryDaily = readQueryFromFile('../sql/query_daily.sql');
+        console.log(queryAll)
 
-    db.query(queryDaily, (err, rows) => {
-        if (err) {
-            console.log('error executing query : ', err);
-            result.daily = []
-        } else {
-            result.daily = rows;
-        }
-    })
+        const result = {};
 
-    res.json(result);
+        result.all = await executeQuery(queryAll);
+        result.monthly = await executeQuery(queryMonthly);
+        result.weekly = await executeQuery(queryWeekly);
+        result.daily = await executeQuery(queryDaily);
+
+        res.json(result);
+    } catch (err) {
+        res.status(500).json({
+            error: err
+        })
+    }
 })
 
-module.exprots = router;
+module.exports = router;
