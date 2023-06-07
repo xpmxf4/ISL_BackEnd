@@ -43,7 +43,6 @@ router.get('/top5', async (req, res) => {
         const queryMonthly = readQueryFromFile('../sql/query_monthly.sql');
         const queryWeekly = readQueryFromFile('../sql/query_weekly.sql');
         const queryDaily = readQueryFromFile('../sql/query_daily.sql');
-        console.log(queryAll)
 
         const result = {};
 
