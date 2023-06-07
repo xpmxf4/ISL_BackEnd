@@ -51,6 +51,11 @@ router.get('/top5', async (req, res) => {
         result.weekly = await executeQuery(queryWeekly);
         result.daily = await executeQuery(queryDaily);
 
+        // cache deactivate
+        res.set('Cache-Control', 'no-cache, no-store, must-revalidate');
+        res.set('Pragma', 'no-cache');
+        res.set('Expires', '0');
+
         res.json(result);
     } catch (err) {
         res.status(500).json({
