@@ -4,6 +4,7 @@ var cookieParser = require("cookie-parser")
 var logger = require("morgan")
 var csrf = require("csurf")
 var helmet = require("helmet")
+var cors = require("cors")
 
 var countriesRouter = require("./routes/countries")
 var csrfTokenRouter = require("./routes/csrfToken")
@@ -25,6 +26,7 @@ app.use(
         },
     })
 )
+app.use(cors())
 
 // Middleware
 app.use(csrf({ cookie: true }))
