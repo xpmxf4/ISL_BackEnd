@@ -7,15 +7,12 @@ const router = express.Router()
 
 const app = express()
 
-// read admin info from txt
-const [host, user, password, database] = fs
-    .readFileSync('database_config.txt', 'utf-8')
-    .split('\n')
-    .map(line => line.replace('\r', ''))
-
 // mysql connection
 const db = mysql.createConnection({
-    host, user, password, database
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 })
 
 // wrap query execution with Promise

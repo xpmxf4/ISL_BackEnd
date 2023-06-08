@@ -1,19 +1,12 @@
 const express = require("express")
 const mysql = require("mysql2")
-const fs = require("fs")
 const router = express.Router()
 
-const [host, user, password, database] = fs
-    .readFileSync("database_config.txt", "utf8")
-    .split("\n")
-    .map((line) => line.replace("\r", ""))
-
-
 const db = mysql.createConnection({
-    host,
-    user,
-    password,
-    database,
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 })
 
 router.post("", function (req, res) {
