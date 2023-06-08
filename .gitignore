@@ -2,6 +2,8 @@
 package-lock.json
 database_config.txt
 .env
+serverless.yml
 
 ### 폴더 무시
 node_modules/
+.serverless/
