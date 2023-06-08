@@ -55,4 +55,5 @@ app.use(function (err, req, res, next) {
     res.json({ error: message, details: error });
 });
 
-module.exports = app;
+const serverless = require('serverless-http');
+module.exports.handler = serverless(app);
