@@ -29,7 +29,9 @@ app.use(
         },
     })
 );
-app.use(cors());
+if (process.env.NODE_ENV == "development") {
+    app.use(cors());
+}
 
 // Middleware
 app.use(csrf({ cookie: true }));
