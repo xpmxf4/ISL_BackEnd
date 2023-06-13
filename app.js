@@ -29,9 +29,10 @@ app.use(
         },
     })
 );
-if (process.env.NODE_ENV == "development") {
-    app.use(cors());
-}
+app.use(cors({
+    origin: "http://127.0.0.1", // 여기에 S3 경로
+    credentials: true
+}));
 
 // Middleware
 app.use(csrf({ cookie: true }));
