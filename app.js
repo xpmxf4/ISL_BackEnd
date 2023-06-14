@@ -35,7 +35,13 @@ app.use(cors({
 }));
 
 // Middleware
-app.use(csrf({ cookie: true }));
+app.use(csrf({
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production"
+    },
+    value: (req) => req.headers['x-csrf-token']
+}));
 
 // routers
 app.use("/countries", countriesRouter);

@@ -9,7 +9,7 @@ const db = mysql.createConnection({
     database: process.env.DB_NAME
 })
 
-router.post("", function (req, res) {
+router.post("/", function (req, res) {
     const from_country = req.body.from_country
     const to_country = req.body.to_country
 
