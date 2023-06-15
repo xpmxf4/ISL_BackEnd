@@ -16,6 +16,7 @@
     "helmet": "^7.0.0",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
+    "jsonwebtoken": "^9.0.0",
     "morgan": "~1.9.1",
     "mysql2": "^3.3.3",
     "serverless-http": "^3.2.0"

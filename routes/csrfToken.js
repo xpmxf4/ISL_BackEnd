@@ -1,10 +1,10 @@
-var express = require("express")
-var router = express.Router()
+const express = require("express")
+const router = express.Router()
+require("dotenv").config();
 
 router.get("/", function (req, res, next) {
-    res.json({
-        csrfToken: req.csrfToken(),
-    })
+    const csrfToken = req.csrfToken();
+    res.json({ csrfToken: csrfToken })
 })
 
 module.exports = router

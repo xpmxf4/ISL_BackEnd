@@ -14,10 +14,15 @@ const statisticsRouter = require("./routes/statistics");
 
 const app = express();
 
+// Middlewares
+app.use(cookieParser());
+app.use(cors({
+    origin: "http://127.0.0.1", // 여기에 S3 경로
+    credentials: true
+}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(helmet());
 app.use(
     helmet.contentSecurityPolicy({
@@ -29,23 +34,10 @@ app.use(
         },
     })
 );
-app.use(cors({
-    origin: "http://127.0.0.1", // 여기에 S3 경로
-    credentials: true
-}));
-
-// Middleware
-app.use(csrf({
-    cookie: {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production"
-    },
-    value: (req) => req.headers['x-csrf-token']
-}));
-
-// routers
-app.use("/countries", countriesRouter);
-app.use("/csrf-token", csrfTokenRouter);
+const csrfProtection = csrf({ cookie: true })
+// Routers
+app.use("/csrf-token", csrfProtection, csrfTokenRouter);
+app.use("/countries", csrfProtection, countriesRouter);
 app.use("/statistics", statisticsRouter);
 
 // catch 404 and forward to error handler
@@ -59,10 +51,13 @@ app.use(function (err, req, res, next) {
     const message = err.message;
     const error = req.app.get("env") === "development" ? err : {};
 
+    console.log(req.cookies);
+
     // return the error message as JSON
     res.status(err.status || 500);
     res.json({ error: message, details: error });
 });
+
 
 module.exports = app;
 
