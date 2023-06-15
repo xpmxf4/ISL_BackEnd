@@ -51,8 +51,6 @@ app.use(function (err, req, res, next) {
     const message = err.message;
     const error = req.app.get("env") === "development" ? err : {};
 
-    console.log(req.cookies);
-
     // return the error message as JSON
     res.status(err.status || 500);
     res.json({ error: message, details: error });
