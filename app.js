@@ -34,7 +34,13 @@ app.use(
         },
     })
 );
-const csrfProtection = csrf({ cookie: true })
+const csrfProtection = csrf({
+    cookie: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "none"
+    }
+})
 // Routers
 app.use("/csrf-token", csrfProtection, csrfTokenRouter);
 app.use("/countries", csrfProtection, countriesRouter);
