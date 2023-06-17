@@ -17,7 +17,7 @@ const app = express();
 // Middlewares
 app.use(cookieParser());
 app.use(cors({
-    origin: "http://127.0.0.1", // 여기에 S3 경로
+    origin: ["http://127.0.0.1", "http://isl-front.s3-website.ap-northeast-2.amazonaws.com"], // 여기에 S3 경로
     credentials: true
 }));
 app.use(logger("dev"));

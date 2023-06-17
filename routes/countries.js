@@ -18,7 +18,7 @@ router.post("/", function (req, res, next) {
         })
     }
 
-    const query = "INSERT INTO isl (to_country) VALUES  (?)"
+    const query = "INSERT INTO isl (to_country, date) VALUES  (?, now())"
     db.query(query, [to_country], function (err, result) {
         if (err) {
             return res.status(500).json({
